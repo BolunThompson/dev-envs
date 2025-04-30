@@ -5,10 +5,10 @@
     nixpkgs.url     = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
-    project.url = "github:BolunThompson/<your-project>";
+    project.url = "git+ssh://git@github.com/Zarkino/PIRI?ref=ipyflow-benchmarks";
     project.inputs.nixpkgs.follows = "nixpkgs";
 
-    devenv.url = "github:BolunThompson/dev-envs?dir=python-static-tools";
+    devenv.url = "github:BolunThompson/dev-envs?dir=lang-envs/python";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -19,34 +19,33 @@
             , devenv
             , ...
             }:
-    flake-utils.eachDefaultSystem (system:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
 
-        # fall back to an empty shell if an input does not define one yet
-        projShell   = project.devShells.${system}.default or pkgs.mkShell { };
-        sharedShell = devenv.devShells.${system}.default or pkks.mkShell { };
+        projShell   = project.devShells.${system}.default;
+        sharedShell = devenv.devShells.${system}.default;
 
-        lib = pkgs.lib;
-        rawUrl = project.sourceInfo.url or "";                    # e.g. "github:owner/repo"
-        ownerRepo = lib.removePrefix "github:" rawUrl;            # "owner/repo"
-        ownerRepoOnly = lib.splitString "?" ownerRepo;            # drop ?dir=...
-        ownerRepoClean = builtins.elemAt ownerRepoOnly 0;         # still "owner/repo"
-        repoName = builtins.elemAt (lib.splitString "/" ownerRepoClean) 1;
       in
       {
         devShells.default = pkgs.mkShell {
-          name = "combined-dev-shell";
+          name = "Dev Shell";
 
-          # Merge inputs from both shells and add GitHub CLI
-          inputsFrom  = [ projShell sharedShell ];
-          buildInputs = [ pkgs.gh ];
+          inputsFrom  = [ sharedShell projShell];
+          buildInputs = [];
 
           shellHook = ''
-            if [ ! -d "./${repoName}" ]; then
-              echo "[flake] cloning ${ownerRepoClean} into ./${repoName} ..."
-              gh repo clone "${ownerRepoClean}" "./${repoName}"
+            # Doesn't work for some reason with mkdir -p only
+            cd
+            if [ ! -d programming ]; then
+              mkdir programming
             fi
+            cd programming
+            if [ ! -d ./PIRI ]; then
+              echo Cloning!
+              git clone git@github.com:Zarkino/PIRI.git
+            fi
+            cd PIRI
           '';
         };
       });

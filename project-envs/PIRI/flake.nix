@@ -31,15 +31,21 @@
         devShells.default = pkgs.mkShell {
           name = "PIRI Dev Shell";
 
-          # Merge inputs from both shells and add GitHub CLI
-          inputsFrom  = [ projShell sharedShell ];
+          inputsFrom  = [ sharedShell projShell];
           buildInputs = [];
 
           shellHook = ''
+            # Doesn't work for some reason with mkdir -p only
+            cd
+            if [ ! -d programming ]; then
+              mkdir programming
+            fi
+            cd programming
             if [ ! -d ./PIRI ]; then
               echo Cloning!
               git clone git@github.com:Zarkino/PIRI.git
             fi
+            cd PIRI
           '';
         };
       });

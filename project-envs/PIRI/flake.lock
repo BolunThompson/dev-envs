@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "lang-envs/python",
-        "lastModified": 1746049474,
-        "narHash": "sha256-m+JTp6pTD6U3ZQYAvCGVQTpDWK6HABr8GmViO4+0W70=",
+        "lastModified": 1746050155,
+        "narHash": "sha256-WoebsF8Ltg25a4+k+Q9+LjZTzBDXp34bFUENGQMG9pA=",
         "owner": "BolunThompson",
         "repo": "dev-envs",
-        "rev": "355dd57139bdc06eb192526e74cfb989cc4ccccb",
+        "rev": "5189fea37277a40267c92e09c51a731ca5654a40",
         "type": "github"
       },
       "original": {
