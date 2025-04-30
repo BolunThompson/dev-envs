@@ -7,13 +7,13 @@
   };
 
   outputs = { nixpkgs, flake-utils, ... }:
-    flake-utils.eachDefaultSystem (system:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
       in {
         devShells.default = pkgs.mkShell {
           name        = "python-static-tools";
-          buildInputs = with pkgs; [ basedpyright ruff ];
+          buildInputs = with pkgs; [ pyright ruff ];
         };
       });
 }
